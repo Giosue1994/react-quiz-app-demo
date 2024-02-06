@@ -6,13 +6,16 @@ export default function Quiz() {
 
     const activeQuestionIndex = userAnswers.length;
 
+    const shufflingAnswers =
+      [...QUESTIONS[activeQuestionIndex].answers].sort(() => Math.random() - 0.5)
+
     function handleSelectedAnswer(selectedAnswer) {
       setUserAnswers((prevAnswers) => {
         return [...prevAnswers, selectedAnswer];
       });
     }
 
-    console.log(userAnswers);
+    console.log(shufflingAnswers);
 
     return (
       <div id="quiz">
@@ -21,10 +24,12 @@ export default function Quiz() {
           <p>{QUESTIONS[activeQuestionIndex].text}</p>
         </div>
         <ul id="answers">
-          {QUESTIONS[activeQuestionIndex].answers.map((answer) => {
+          {shufflingAnswers.map((answer) => {
             return (
               <li key={answer} className="answer">
-                <button onClick={() => handleSelectedAnswer(answer)}>{answer}</button>
+                <button onClick={() => handleSelectedAnswer(answer)}>
+                  {answer}
+                </button>
               </li>
             );
           })}
