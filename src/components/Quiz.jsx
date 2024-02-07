@@ -1,39 +1,40 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import QUESTIONS from '../questions.js';
+import QuizSummary from "./QuizSummary.jsx";
+import { QuizContext } from '../store/quiz-context.jsx';
 
 export default function Quiz() {
-    const [userAnswers, setUserAnswers] = useState([]);
+  const { items, selectedAnswer } = useContext(QuizContext);
+  console.log(items);
 
-    const activeQuestionIndex = userAnswers.length;
+  const activeQuestionIndex = items.length;
+  const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
 
-    const shufflingAnswers =
-      [...QUESTIONS[activeQuestionIndex].answers].sort(() => Math.random() - 0.5)
+  if (quizIsComplete) {
+    return <QuizSummary />;
+  }
 
-    function handleSelectedAnswer(selectedAnswer) {
-      setUserAnswers((prevAnswers) => {
-        return [...prevAnswers, selectedAnswer];
-      });
-    }
+  const shufflingAnswers = [...QUESTIONS[activeQuestionIndex].answers].sort(
+    () => Math.random() - 0.5
+  );
 
-    console.log(shufflingAnswers);
-
-    return (
-      <div id="quiz">
-        <div id="question">
-          {/* <progress /> */}
-          <p>{QUESTIONS[activeQuestionIndex].text}</p>
-        </div>
-        <ul id="answers">
-          {shufflingAnswers.map((answer) => {
-            return (
-              <li key={answer} className="answer">
-                <button onClick={() => handleSelectedAnswer(answer)}>
-                  {answer}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+  return (
+    <div id="quiz">
+      <div id="question">
+        {/* <progress /> */}
+        <p>{QUESTIONS[activeQuestionIndex].text}</p>
       </div>
-    );
+      <ul id="answers">
+        {shufflingAnswers.map((answer) => {
+          return (
+            <li key={answer} className="answer">
+              <button onClick={() => selectedAnswer(answer)}>
+                {answer}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
