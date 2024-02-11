@@ -1,43 +1,49 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useCallback } from "react";
 
 export const QuizContext = createContext({
     items: [],
-    selectedAnswer: () => {}
+    selectedAnswer: () => {},
+    skipAnswer: () => {}
 })
 
 function quizReducer(state, action) {
     if (action.type === "SELECT") {
+      const userAnswers = [
+        ...state.userAnswers,
+        action.payload.answer,
+      ];
 
-        const userAnswers = [
-          ...state.userAnswers,
-          action.payload,
-        ];
-
-        return {
-          userAnswers: userAnswers
-        };
+      return {
+        userAnswers: userAnswers,
+      };
     }
 
     return state;
 }
 
 export default function QuizContextProvider({children}) {
-
     const [userAnswersState, userAnswersDispatch] = useReducer(quizReducer, {
       userAnswers: [],
     });
 
-    function handleSelectedAnswer(selectedAnswer,) {
+    const handleSelectedAnswer = useCallback(
+      function handleSelectedAnswer(selectedAnswer) {
         userAnswersDispatch({
           type: "SELECT",
-          payload: selectedAnswer,
+          payload: {
+            answer: selectedAnswer,
+          },
         });
-    }
+      },
+      []
+    );
 
+    const handleSkipAnswer = useCallback(() => handleSelectedAnswer(null), []);
     
     const quizCtx = {
       items: userAnswersState.userAnswers,
       selectedAnswer: handleSelectedAnswer,
+      skipAnswer: handleSkipAnswer,
     };
 
     return (
