@@ -7,7 +7,7 @@ export const QuizContext = createContext({
 })
 
 function quizReducer(state, action) {
-    if (action.type === "SELECT") {
+    if (action.type === "USER_ANSWERS") {
       const userAnswers = [
         ...state.userAnswers,
         action.payload.answer,
@@ -29,7 +29,7 @@ export default function QuizContextProvider({children}) {
     const handleSelectedAnswer = useCallback(
       function handleSelectedAnswer(selectedAnswer) {
         userAnswersDispatch({
-          type: "SELECT",
+          type: "USER_ANSWERS",
           payload: {
             answer: selectedAnswer,
           },

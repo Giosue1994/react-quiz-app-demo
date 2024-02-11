@@ -1,47 +1,10 @@
-import { useContext, useRef, useState } from "react";
-import QUESTIONS from "../questions.js";
-import { QuizContext } from "../store/quiz-context.jsx";
+import { useRef } from "react";
 
-export default function Answers({index}) {
+export default function Answers({ answers, onSelectAnswer, answer, answerState }) {
   const shufflingAnswers = useRef();
-  const [answer, setAnswer] = useState({
-    selectedAnswer: "",
-    isCorrect: null,
-  });
-
-  const { selectedAnswer } = useContext(QuizContext);
 
   if (!shufflingAnswers.current) {
-    shufflingAnswers.current = [...QUESTIONS[index].answers].sort(
-      () => Math.random() - 0.5
-    );
-  }
-
-  let answerState = "";
-
-  function handleSelectAnswer(answer) {
-    setAnswer({
-      selectedAnswer: answer,
-      isCorrect: null,
-    });
-
-    setTimeout(() => {
-
-      setAnswer({
-        selectedAnswer: answer,
-        isCorrect: QUESTIONS[index].answers[0] === answer,
-      });
-
-      setTimeout(() => {
-        selectedAnswer(answer);
-      }, 2000);
-    }, 1000);
-  }
-
-  if (answer.selectedAnswer && answer.isCorrect !== null) {
-    answerState = answer.isCorrect ? "correct" : "wrong";
-  } else if (answer.selectedAnswer) {
-    answerState = "answered";
+    shufflingAnswers.current = [...answers].sort(() => Math.random() - 0.5);
   }
 
   return (
@@ -65,7 +28,7 @@ export default function Answers({index}) {
           <li key={userAnswer} className="answer">
             <button
               className={cssClasses}
-              onClick={() => handleSelectAnswer(userAnswer)}
+              onClick={() => onSelectAnswer(userAnswer)}
               disabled={answerState !== ""}
             >
               {userAnswer}
